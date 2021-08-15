@@ -38,7 +38,6 @@ towers = [] # [x, y, type]
 
 clock = pygame.time.Clock()
 
-
 def randscreen():
 	y = display_height - tilesize
 	x = 0
@@ -110,18 +109,23 @@ def randscreen():
 
 		i += 1
 
+	#Checking For Overlaps
+
 	for a in tiles:
 		for b in towers:
 			if a[0] == b[0] and a[1] == b[1]:
 				towers.remove(b)
 
-	i = 0
-
 	for a in towers:
-		for j in range(i):
-			if a == towers[j]:
-				towers.pop(j)
-		i+=1
+		k = 0
+		for b in towers:
+			if a == b and k:
+				towers.remove(b)
+				k+=1
+			elif a == b:
+				k+=1
+
+
 
 def findir(ele):
 	for i in range(len(tiles) - 1):
@@ -242,18 +246,17 @@ def maingam(tot):
 		else:
 			transparent.fill(black)
 			gameDisplay.blit(transparent, (0, 0))
-			pygame.draw.rect(gameDisplay, brown, [display_width//4, display_height//3, display_width//2, display_height//3])
 			writes("Are you sure to end your turn?", yellow, display_width//4 + display_width//12, display_height//3 + display_height//20, display_height//25)
-			Button("Yes", display_width//4 + display_width//10 + display_width//55, display_height//3 + display_height//5 + display_height//70, black, white, display_width//4 + display_width//10, display_height//3 + display_height//5, display_width//14, display_height//16, white, black)
-			Button("No", display_width - (display_width//4 + display_width//10 + display_width//14) + display_width//44, display_height//3 + display_height//5 + display_height//70, black, white, display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//5, display_width//14, display_height//16, white, black)
+			Button("Yes", display_width//4 + display_width//10 + display_width//55, display_height//3 + display_height//7 + display_height//70, white, white, display_width//4 + display_width//10, display_height//3 + display_height//7, display_width//14, display_height//16, black, white, 0, 30)
+			Button("No", display_width - (display_width//4 + display_width//10 + display_width//14) + display_width//44, display_height//3 + display_height//7 + display_height//70, white, white, display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//7, display_width//14, display_height//16, white, white, 0, 30)
 
 
 
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN:
-					if inmouse(display_width//4 + display_width//10, display_height//3 + display_height//5, display_width//14, display_height//16):
+					if inmouse(display_width//4 + display_width//10, display_height//3 + display_height//7, display_width//14, display_height//16):
 							nextl = 2
-					elif inmouse(display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//5, display_width//14, display_height//16):
+					elif inmouse(display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//7, display_width//14, display_height//16):
 							nextl = 0
 		
 		clock.tick(fram)
@@ -406,18 +409,17 @@ def maingam(tot):
 		else:
 			transparent.fill(black)
 			gameDisplay.blit(transparent, (0, 0))
-			pygame.draw.rect(gameDisplay, brown, [display_width//4, display_height//3, display_width//2, display_height//3])
 			writes("Are you sure to end your turn?", yellow, display_width//4 + display_width//12, display_height//3 + display_height//20, display_height//25)
-			Button("Yes", display_width//4 + display_width//10 + display_width//55, display_height//3 + display_height//5 + display_height//70, black, white, display_width//4 + display_width//10, display_height//3 + display_height//5, display_width//14, display_height//16, white, black)
-			Button("No", display_width - (display_width//4 + display_width//10 + display_width//14) + display_width//44, display_height//3 + display_height//5 + display_height//70, black, white, display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//5, display_width//14, display_height//16, white, black)
+			Button("Yes", display_width//4 + display_width//10 + display_width//55, display_height//3 + display_height//7 + display_height//70, white, white, display_width//4 + display_width//10, display_height//3 + display_height//7, display_width//14, display_height//16, black, white, 0, 30)
+			Button("No", display_width - (display_width//4 + display_width//10 + display_width//14) + display_width//44, display_height//3 + display_height//7 + display_height//70, white, white, display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//7, display_width//14, display_height//16, white, white, 0, 30)
 
 
 
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN:
-					if inmouse(display_width//4 + display_width//10, display_height//3 + display_height//5, display_width//14, display_height//16):
+					if inmouse(display_width//4 + display_width//10, display_height//3 + display_height//7, display_width//14, display_height//16):
 						nextl = 2
-					elif inmouse(display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//5, display_width//14, display_height//16):
+					elif inmouse(display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//7, display_width//14, display_height//16):
 						nextl = 0
 				
 		imgt = (imgt + 1) % 2
