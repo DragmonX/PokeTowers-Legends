@@ -33,6 +33,8 @@ magenta = ((255,0,230))
 brown = ((100,40,0))
 silver = ((192, 192, 192))
 gold = ((255, 215, 0))
+sky_blue = (135,206,235)
+
 
 transparent = pygame.Surface((display_width, display_height))
 transparent.set_alpha(168)
@@ -112,15 +114,15 @@ def writes(msg, color, a, b, size):
     screen_text = Fonts.render(msg, True, color)
     gameDisplay.blit(screen_text, [a, b])
 
-def Button(text, p1, p2, textcolor1, textcolor2, x, y, l, b, color1, color2):
+def Button(text, p1, p2, textcolor1, textcolor2, x, y, l, b, color1, color2, alpha1 = 255, alpha2 = 255):
     mouse = pygame.mouse.get_pos()
 	
     if x < mouse[0] < x + l and y < mouse[1] < y + b:
-	    pygame.draw.rect(gameDisplay, color2, [x, y, l, b])
+	    colpatch(color2, l, b, alpha2, x, y)
 	    message(text, textcolor2, p1, p2)
 		
     else:
-	    pygame.draw.rect(gameDisplay, color1, [x, y, l, b])
+	    colpatch(color1, l, b, alpha1, x, y)
 	    message(text, textcolor1, p1, p2)
 
 def inmouse(x, y, l, b):

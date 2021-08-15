@@ -138,7 +138,7 @@ def findir(ele):
 	return 2
 
 
-def maingam():
+def maingam(tot):
 	randscreen()
 
 	#song
@@ -421,11 +421,14 @@ def maingam():
 #________________________________________________________________________________________________________________________________
 
 	nextl = 0
-	trind = [] #[ind, x, y, hp, stats]
+	trind = [] #[ind, x, y, hp, stats, ihp]
 	tr, tim, samtro, timperwa = 1, 120, [], 120
 
 	projectiles = []
 	towtim = []
+	crossed = 0
+
+	print(troops)
 
 	for i in range(len(towers)):
 		towtim.append(0)
@@ -462,7 +465,8 @@ def maingam():
 			if a[2] == 1:
 				image(sprite[1].get_image(towtim[tow]), a[0] + tower[a[2]].l//4, a[1]-sprite[1].height+17)
 
-		for troop in range(len(troops)):
+		for t in troops:
+			troop = troops.index(t)
 			if (troops[troop][1] - 1) % 18 + 1 <= tr:
 				direc = findir([trind[troop][1], trind[troop][2]])
 				pokemon[troops[troop][0] - 1].move(direc, trind[troop][0], trind[troop][1], trind[troop][2])
@@ -471,9 +475,7 @@ def maingam():
 
 				trind[troop][0] = (trind[troop][0] + 1) % 2
 
-				if trind[troop][1] > -32 or samtro[(troops[troop][1] - 1) % 18] * 6 <= tim % timperwa:
-					if trind[troop][1] < 0 and samtro[(troops[troop][1] - 1) % 18] * 6 == tim % timperwa:
-						samtro[(troops[troop][1] - 1) % 18]+=1
+				if trind[troop][1] > -32 or 8*((troops[troop][1]-1)//18) == tim%timperwa:
 
 					spe = trind[troop][4][2]
 
@@ -485,6 +487,17 @@ def maingam():
 						trind[troop][2] += int((display_height//140) * (spe/240))
 					else:
 						trind[troop][1] -= int((display_width//160) * (spe/240))
+
+				if trind[troop][1] > display_width:
+					for projectile in projectiles:
+						if projectile[3] == troop:
+							projectiles.remove(projectile)
+						elif projectile[3] > troop:
+							projectile[3] -= 1
+
+					trind.remove(trind[troop])
+					troops.remove(troops[troop])
+					crossed += 1
 
 		for tem in range(len(towers)):
 			tow = towers[tem]
@@ -568,7 +581,19 @@ def maingam():
 				projectiles.remove(projectile)
 
 
-		
+		if crossed >= 20 or len(troops)==0:
+			projectiles.clear()
+			troops.clear()
+
+			colpatch(black, display_width, display_height, 168, 0, 0)
+
+			pygame.draw.rect(gameDisplay, brown, [display_width//4, display_height//3, display_width//2, display_height//3])
+			if crossed >= 20:
+				writes("Escapers Won", sky_blue, display_width//4 + display_width//12, display_height//3 + display_height//20, display_height//25)
+			else:
+				writes("Defenders Won", sky_blue, display_width//4 + display_width//6, display_height//3 + display_height//20, display_height//25)
+
+			
 
 		tim += 1
 		tr = tim // timperwa

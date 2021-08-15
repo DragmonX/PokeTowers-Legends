@@ -28,6 +28,7 @@ rarrow = loadimage('Images/rightarrow.png', display_width//30, display_height//6
 offline = loadimage('Images/offline.png', display_width//12, display_width//12)
 gbutton = loadimage('Images/goldbutton.png', display_width//12, display_width//12)
 ptower = loadimage('Images/printtower.png', display_width//18, display_width//18)
+playbutton = loadimage('Images/play.png', display_width//28, display_width//28)
 
 #game coding
 
@@ -99,7 +100,7 @@ def playerpage():
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mselect == 0 and inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
-					maingam()
+					maingam(1)
 					quit = True
 		
 		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
@@ -128,11 +129,14 @@ def firstpage():
 
 		image(gametext, display_width//4, display_height//19)
 
-		Button("Play", display_width//2 - display_width//44, display_height//3, white, black, display_width//2 - display_width//26 - display_width//50, display_height//3 - display_height//50, display_width//13 + display_width//25, display_height//13, red, white)
+		colpatch(white, display_width//8, display_height, 90, display_width//10, 0)
+
+		Button("Play", display_width//8 + display_width//30, display_height//3, black, black, display_width//10, display_height//3 - display_height//50, display_width//8, display_height//13, white, black, 0, 50)
+		image(playbutton, display_width//8-display_width//40, display_height//3-display_height//60)
 
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				if inmouse(display_width//2 - display_width//26 - display_width//50, display_height//3 - display_height//50, display_width//13 + display_width//25, display_height//13):
+				if inmouse(display_width//10, display_height//3 - display_height//50, display_width//8, display_height//13):
 					quit = True
 					playerpage()
 
