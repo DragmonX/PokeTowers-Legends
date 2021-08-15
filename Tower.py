@@ -139,8 +139,14 @@ def findir(ele):
 
 
 def maingam(tot):
-	randscreen()
+	if not len(tiles) or not tot:
+		tiles.clear()
+		towers.clear()
+		randscreen()
 
+
+	for t in range(len(towers)):
+		towers[t][2] = 0
 	#song
 
 	pygame.mixer.music.load('Sound/Battle.wav')
@@ -428,8 +434,6 @@ def maingam(tot):
 	towtim = []
 	crossed = 0
 
-	print(troops)
-
 	for i in range(len(towers)):
 		towtim.append(0)
 
@@ -512,7 +516,7 @@ def maingam(tot):
 					troopco = [trind[troop][1], trind[troop][2]]
 
 					if dist(cen, troopco) <= rang and maxx < trind[troop][1]:
-						targ, maxx, maxy = troop, trind[troop][1], 0
+						targ, maxx, maxy = troop, trind[troop][1], trind[troop][2]
 					elif dist(cen, troopco) <= rang and maxx == troops[troop][1] and maxy < trind[troop][2]:
 						targ, maxy = troop, trind[troop][2]
 
@@ -526,7 +530,12 @@ def maingam(tot):
 
 		for projectile in projectiles:
 			x1, y1 = projectile[1], projectile[2]
-			x2, y2 = trind[projectile[3]][1], trind[projectile[3]][2]
+			if projectile[3] < len(trind):
+				x2, y2 = trind[projectile[3]][1], trind[projectile[3]][2]
+			else:
+				projectiles.remove(projectile)
+				continue
+
 			if projectile[1] != trind[projectile[3]][1] or  projectile[2] != trind[projectile[3]][2]:
 
 				ang = 0
@@ -585,15 +594,25 @@ def maingam(tot):
 			projectiles.clear()
 			troops.clear()
 
-			colpatch(black, display_width, display_height, 168, 0, 0)
+			colpatch(black, display_width, display_height, 188, 0, 0)
 
-			pygame.draw.rect(gameDisplay, brown, [display_width//4, display_height//3, display_width//2, display_height//3])
 			if crossed >= 20:
-				writes("Escapers Won", sky_blue, display_width//4 + display_width//12, display_height//3 + display_height//20, display_height//25)
+				writes("Escapers Won", sky_blue, display_width//4 + display_width//6, display_height//3 + display_height//20, display_height//25)
 			else:
 				writes("Defenders Won", sky_blue, display_width//4 + display_width//6, display_height//3 + display_height//20, display_height//25)
 
-			
+			Button("Home", display_width//4, display_height//2, white, white, display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19, black, white, 0, 20)
+			Button("Play Again", display_width//1.5, display_height//2, white, white, display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19, black, white, 0, 20)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19):
+						return 1
+					elif inmouse(display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19):
+						maingam(tot+1)
+
+
+
 
 		tim += 1
 		tr = tim // timperwa
@@ -601,3 +620,5 @@ def maingam(tot):
 		clock.tick(fram)
 
 		pygame.display.update()
+
+	return 0

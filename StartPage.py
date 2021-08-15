@@ -100,8 +100,12 @@ def playerpage():
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mselect == 0 and inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
-					maingam(1)
-					quit = True
+					p = maingam(0)
+
+					if not p:
+						quit = True
+					else:
+						continue
 		
 		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
 				

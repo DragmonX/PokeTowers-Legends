@@ -114,16 +114,16 @@ def writes(msg, color, a, b, size):
     screen_text = Fonts.render(msg, True, color)
     gameDisplay.blit(screen_text, [a, b])
 
-def Button(text, p1, p2, textcolor1, textcolor2, x, y, l, b, color1, color2, alpha1 = 255, alpha2 = 255):
+def Button(text, p1, p2, textcolor1, textcolor2, x, y, l, b, color1, color2, alpha1 = 255, alpha2 = 255, size = display_height//28):
     mouse = pygame.mouse.get_pos()
 	
     if x < mouse[0] < x + l and y < mouse[1] < y + b:
 	    colpatch(color2, l, b, alpha2, x, y)
-	    message(text, textcolor2, p1, p2)
+	    writes(text, textcolor2, p1, p2, size)
 		
     else:
 	    colpatch(color1, l, b, alpha1, x, y)
-	    message(text, textcolor1, p1, p2)
+	    writes(text, textcolor1, p1, p2, size)
 
 def inmouse(x, y, l, b):
 	mouse = pygame.mouse.get_pos()
