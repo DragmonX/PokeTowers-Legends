@@ -33,12 +33,13 @@ sword = loadimage('Images/sword.png', display_width//60, display_width//60)
 
 #game coding
 
-tiles = []
-towers = [] # [x, y, type]
+#towers -> [[x, y, type],]
 
 clock = pygame.time.Clock()
 
 def randscreen():
+	tiles, towers = [], []
+
 	y = display_height - tilesize
 	x = 0
 
@@ -125,9 +126,9 @@ def randscreen():
 			elif a == b:
 				k+=1
 
+	return tiles, towers
 
-
-def findir(ele):
+def findir(ele, tiles):
 	for i in range(len(tiles) - 1):
 		if tiles[i][0] <= ele[0] - (tilesize//2 - 16) <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] + tilesize//2 + 16 <= tiles[i][1] + tilesize:
 			if tiles[i][0] == tiles[i + 1][0] and tiles[i][1] < tiles[i + 1][1]:
@@ -142,15 +143,9 @@ def findir(ele):
 	return 2
 
 
-def maingam(tot):
-	if not len(tiles) or not tot:
-		tiles.clear()
-		towers.clear()
-		randscreen()
+def maingam(tot, tiles, partow):
+	towers = partow
 
-
-	for t in range(len(towers)):
-		towers[t][2] = 0
 	#song
 
 	pygame.mixer.music.load('Sound/Battle.wav')
@@ -193,7 +188,7 @@ def maingam(tot):
 			maketower = False
 			for a in towers:
 				if toselected == a:
-					pygame.draw.rect(gameDisplay, blue, [a[0]+tower[co[2]].l, a[1]-tower[co[2]].b, tower[co[2]].l * len(tower), tower[co[2]].b])
+					colpatch(black, tower[co[2]].l * len(tower), tower[co[2]].b, 100, a[0]+tower[co[2]].l, a[1]-tower[co[2]].b)
 					x, y = a[0]+tower[co[2]].l, a[1]-tower[co[2]].b
 					for i in range(0, len(tower)):
 						if i == a[2]:
@@ -449,7 +444,7 @@ def maingam(tot):
 		sta = pokemon[troops[i][0] - 1].stats(iv)
 
 
-		trind.append([0, -32, display_height - tilesize//2 - 16, hpi, sta, hpi])
+		trind.append([0, -32, tiles[0][1] + tilesize//2 - 16, hpi, sta, hpi])
 
 
 	while not quit:
@@ -474,7 +469,7 @@ def maingam(tot):
 		for t in troops:
 			troop = troops.index(t)
 			if (troops[troop][1] - 1) % 18 + 1 <= tr:
-				direc = findir([trind[troop][1], trind[troop][2]])
+				direc = findir([trind[troop][1], trind[troop][2]], tiles)
 				pokemon[troops[troop][0] - 1].move(direc, trind[troop][0], trind[troop][1], trind[troop][2])
 				pygame.draw.rect(gameDisplay, white, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, display_width//25, display_height//140])
 				pygame.draw.rect(gameDisplay, green, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, (display_width//25 * trind[troop][3])//trind[troop][5], display_height//140])
@@ -611,7 +606,8 @@ def maingam(tot):
 					if inmouse(display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19):
 						return 1
 					elif inmouse(display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19):
-						maingam(tot+1)
+						maingam(tot+1, tiles, partow)
+						quit = True
 
 
 

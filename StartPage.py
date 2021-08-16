@@ -1,8 +1,7 @@
 from propervalues import *
 from Data import *
 from Tower import *
-from math import atan, pi, sin, cos
-import pickle as pi
+from Mapmaker import *
 import pygame, time, random
 
 pygame.init()
@@ -29,32 +28,15 @@ offline = loadimage('Images/offline.png', display_width//12, display_width//12)
 gbutton = loadimage('Images/goldbutton.png', display_width//12, display_width//12)
 ptower = loadimage('Images/printtower.png', display_width//18, display_width//18)
 playbutton = loadimage('Images/play.png', display_width//28, display_width//28)
+mapbutton = loadimage('Images/map.png', display_width//32, display_width//32)
 
 #game coding
 
 clock = pygame.time.Clock()
 
-def rplayerdata():
-	fil = open("PlayerData.dat", "rb")
-	data = []
-	while True:
-		try:
-			data.append(pi.load(fil))
-		except EOFError:
-			break
-	fil.close()
-
-	return data
-
-def wplayerdata(data):
-	fil = open("PlayerData.dat", "wb")
-	for dat in data:
-		pi.dump(dat, fil)
-	fil.close()
+dat = rplayerdata("PlayerData.dat")
 
 def playerpage():
-	dat = rplayerdata()
-
 	quit = False
 	mselect = 0
 
@@ -100,19 +82,20 @@ def playerpage():
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if mselect == 0 and inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
-					p = maingam(0)
+					tiles, partow = randscreen()
+					p = maingam(0, tiles, partow)
 
 					if not p:
 						quit = True
 					else:
-						continue
+						return 1
 		
 		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
 				
 		
 		pygame.display.update()
 
-	wplayerdata(dat)
+	return 0
 
 
 def firstpage():
@@ -138,12 +121,27 @@ def firstpage():
 		Button("Play", display_width//8 + display_width//30, display_height//3, black, black, display_width//10, display_height//3 - display_height//50, display_width//8, display_height//13, white, black, 0, 50)
 		image(playbutton, display_width//8-display_width//40, display_height//3-display_height//60)
 
+		Button("Editor", display_width//8 + display_width//30, display_height//3 + display_height//13, black, black, display_width//10, display_height//3 - display_height//50 + display_height//13, display_width//8, display_height//13, white, black, 0, 50)
+		image(mapbutton, display_width//8-display_width//50, display_height//3-display_height//100 + display_height//13)
+
+
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if inmouse(display_width//10, display_height//3 - display_height//50, display_width//8, display_height//13):
-					quit = True
-					playerpage()
+					p = playerpage()
+					if not p:
+						quit = True
+					else:
+						continue
+
+				if inmouse(display_width//10, display_height//3 - display_height//50 + display_height//13, display_width//8, display_height//13):
+					p = Map([[], [], background])
+					if not p:
+						quit = True
+					else:
+						continue
 
 		pygame.display.update()
 
 firstpage()
+wplayerdata("PlayerData.dat", dat)

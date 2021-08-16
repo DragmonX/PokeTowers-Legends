@@ -7,6 +7,7 @@ pygame.init()
 
 tilesize = display_height//11
 
+
 # importing images
 
 tile = loadimage('Images/tile.jpeg', tilesize, tilesize)

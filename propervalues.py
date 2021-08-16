@@ -1,5 +1,6 @@
 import pygame, random
 from math import sqrt, pi
+import pickle
 
 pygame.init();
 
@@ -125,6 +126,7 @@ def Button(text, p1, p2, textcolor1, textcolor2, x, y, l, b, color1, color2, alp
 	    colpatch(color1, l, b, alpha1, x, y)
 	    writes(text, textcolor1, p1, p2, size)
 
+
 def inmouse(x, y, l, b):
 	mouse = pygame.mouse.get_pos()
 
@@ -155,3 +157,21 @@ def number(m, n):
 	x = int(round(random.randrange(m, n)/1.0) * 1.0)
 		
 	return x
+
+def rplayerdata(filname):
+	fil = open(filname, "rb")
+	data = []
+	while True:
+		try:
+			data.append(pickle.load(fil))
+		except EOFError:
+			break
+	fil.close()
+
+	return data
+
+def wplayerdata(filname, data):
+	fil = open(filname, "wb")
+	for dat in data:
+		pickle.dump(dat, fil)
+	fil.close()
