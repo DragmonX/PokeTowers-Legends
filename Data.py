@@ -5,7 +5,7 @@ pygame.init()
 
 #hard coding
 
-tilesize = display_height//12
+tilesize = display_height//11
 
 
 # importing images
