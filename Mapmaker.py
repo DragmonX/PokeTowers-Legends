@@ -27,6 +27,11 @@ def Map(data):
 	toolse = 0
 	tool, opti = 0, 0
 
+	positions = []
+
+	for i in range((display_width//tilesize) * (display_height//tilesize - 1)):
+		positions.append(0)
+
 	while not quit:
 		events = pygame.event.get()
 		mouse = pygame.mouse.get_pos()
@@ -65,6 +70,7 @@ def Map(data):
 					elif event.button == 1:
 						if tool == 1 and currpos[1] < display_height//tilesize:
 							data[0].append((currpos[0]*tilesize, display_height - (currpos[1]+1)*tilesize))
+							positions[currpos[1]*display_width//tilesize + currpos[0]]
 
 		if toolse == 1:
 			n = 1+len(tower)
