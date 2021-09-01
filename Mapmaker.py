@@ -29,7 +29,7 @@ def Map(data):
 
 	positions = []
 
-	for i in range((display_width//tilesize) * (display_height//tilesize - 1)):
+	for i in range((display_width//tilesize + 1) * (display_height//tilesize)):
 		positions.append(0)
 
 	while not quit:
@@ -50,15 +50,18 @@ def Map(data):
 		for til in data[0]:
 			image(tile, til[0], til[1])
 
+		for to in data[1]:
+			image(tower[to[2]].img, to[0], to[1])
+
 		if tool:
 			if tool == 1:
 				image(tile, mouse[0]-tilesize//2, mouse[1]-tilesize//2)
 			elif  tool <= len(tower)+1:
-				image(tower[tool-2].img,
-
-				 mouse[0]-tower[tool-2].l//2, mouse[1]-tower[tool-2].b//2)
+				image(tower[tool-2].img, mouse[0]-tower[tool-2].l//2, mouse[1]-tower[tool-2].b//2)
 
 			currpos = [mouse[0]//tilesize, (display_height - mouse[1])//tilesize]
+
+			tileno = currpos[0]*(display_height//tilesize) + currpos[1]
 
 			if currpos[1] < display_height//tilesize:
 				colpatch(black, tilesize, tilesize, 50, currpos[0]*tilesize, display_height - (currpos[1]+1)*tilesize)
@@ -68,9 +71,13 @@ def Map(data):
 					if event.button == 3:
 						tool = 0
 					elif event.button == 1:
-						if tool == 1 and currpos[1] < display_height//tilesize:
-							data[0].append((currpos[0]*tilesize, display_height - (currpos[1]+1)*tilesize))
-							positions[currpos[1]*display_width//tilesize + currpos[0]]
+						if tool == 1 and currpos[1] < display_height//tilesize and positions[tileno] == 0:
+							data[0].append((currpos[0]*tilesize, display_height - (currpos[1]+1)*tilesize, tileno))
+							positions[tileno] = 1
+						elif 1 < tool <= 1 + len(tower) and currpos[1] < display_height//tilesize and positions[tileno] == 0:
+							data[1].append((currpos[0]*tilesize, display_height - (currpos[1]+1)*tilesize, tool - 2, tileno))
+							positions[tileno] = tool
+
 
 		if toolse == 1:
 			n = 1+len(tower)
