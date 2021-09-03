@@ -15,7 +15,7 @@ more = loadimage('Images/more.png', display_width//32, display_width//32)
 home = loadimage('Images/home.png', display_height//28, display_height//28)
 save = loadimage('Images/save.png', display_height//28, display_height//28)
 saveas = loadimage('Images/saveas.png', display_height//28, display_height//28)
-
+cross = loadimage('Images/cross.png', display_height//28, display_height//28)
 
 #File Coding
 
@@ -26,6 +26,9 @@ def Map(data):
 
 	toolse = 0
 	tool, opti = 0, 0
+	fname = data[3]
+
+	savetb = 0
 
 	positions = []
 
@@ -39,7 +42,7 @@ def Map(data):
 			if event.type == pygame.QUIT:
 				quit = True
 
-		image(data[2], 0, 0)
+		image(loadimage('Images/%s.jpg'%data[2], display_width, display_height), 0, 0)
 
 		Button("", 0, 0, black, black, 0, 0, display_width//30, display_width//30, black, black, 0, 90)
 		image(tools, 0, 0)
@@ -106,31 +109,63 @@ def Map(data):
 							tool = j+1
 
 		elif toolse == 2:
-			colpatch(black, display_width, display_height, 130, 0, 0)
+			if opti == 0:
+				colpatch(black, display_width, display_height, 130, 0, 0)
 
-			textsize = display_height//28
+				textsize = display_height//28
 
-			Button("Home", 3*display_width//8, display_height//4, white, white, display_width//4, display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
-			Button("SaveAs", 3*display_width//8, display_height//4+textsize+display_height//16, white, white, display_width//4, display_height//4+textsize+display_height//16-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
-			Button("Save", 3*display_width//8, display_height//4+2*textsize+2*display_height//16, white, white, display_width//4, display_height//4+2*textsize+2*display_height//16-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+				Button("Home", 3*display_width//8, display_height//4, white, white, display_width//4, display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+				Button("SaveAs", 3*display_width//8, display_height//4+textsize+display_height//16, white, white, display_width//4, display_height//4+textsize+display_height//16-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+				Button("Save", 3*display_width//8, display_height//4+2*textsize+2*display_height//16, white, white, display_width//4, display_height//4+2*textsize+2*display_height//16-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
 
-			image(home, 5*display_width//16-display_height//80, display_height//4)
-			image(saveas, 5*display_width//16-display_height//100, display_height//4+textsize+display_height//16)
-			image(save, 5*display_width//16-display_height//100, display_height//4+2*textsize+2*display_height//16)
+				image(home, 5*display_width//16-display_height//80, display_height//4)
+				image(saveas, 5*display_width//16-display_height//100, display_height//4+textsize+display_height//16)
+				image(save, 5*display_width//16-display_height//100, display_height//4+2*textsize+2*display_height//16)
 
-			for event in events:
-				if event.type == pygame.MOUSEBUTTONDOWN:
-					k = 0
-					for i in range(3):
-						if inmouse(((i//4)+1)*display_width//4, display_height//4+(i%4)*(textsize+display_height//16)-display_height//32, display_width//4, display_height//16+textsize):
-							opti = i+1
-							k = 1
-					if not k:
-						toolse = 0
+				for event in events:
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						k = 0
+						for i in range(3):
+							if inmouse(((i//4)+1)*display_width//4, display_height//4+(i%4)*(textsize+display_height//16)-display_height//32, display_width//4, display_height//16+textsize):
+								opti = i+1
+								k = 1
+						if not k:
+							toolse = 0
 
-			if opti == 1:
+			elif opti == 1:
 				quit = True
 				return 1
+			elif opti == 2:
+				colpatch(black, display_width, display_height, 130, 0, 0)
+
+				textsize = display_height//28
+
+				Button("Save", 3*display_width//8, 3*display_height//4, white, white, display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+				Button("Cancel", 5*display_width//8, 3*display_height//4, white, white, display_width//2, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+
+				image(save, 5*display_width//16-display_height//100, 3*display_height//4)
+				image(cross, 9*display_width//16 - display_height//100, 3*display_height//4-display_height//200)
+
+				for event in events:
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						if inmouse(display_width//2, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize):
+							opti = 0
+							data[3] = fname
+						elif inmouse(display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize):
+							dat[1].append(data)
+							fname = data[3]
+							opti = 0
+
+				data[3], savetb = textbox(display_width//4, 3*display_height//4-display_height//32-textsize, display_width//2, textsize, data[3], events, savetb, gray, white)
+
+
+
+
+			else:
+				opti = 0
+				toolse = 0
+
+
 
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:

@@ -14,6 +14,8 @@ tile = loadimage('Images/tile.jpeg', tilesize, tilesize)
 
 #Datas
 
+dat = rplayerdata("PlayerData.dat")
+
 class Tower():
 	def __init__(self, file_name, l, b, rang, projectile, tim, attack, cost):
 		self.img = loadimage(file_name, l, b)

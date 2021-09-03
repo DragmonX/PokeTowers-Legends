@@ -34,8 +34,6 @@ mapbutton = loadimage('Images/map.png', display_width//32, display_width//32)
 
 clock = pygame.time.Clock()
 
-dat = rplayerdata("PlayerData.dat")
-
 def playerpage():
 	quit = False
 	mselect = 0
@@ -135,7 +133,7 @@ def firstpage():
 						continue
 
 				if inmouse(display_width//10, display_height//3 - display_height//50 + display_height//13, display_width//8, display_height//13):
-					p = Map([[], [], background])
+					p = Map([[], [], 'background', "", False])
 					if not p:
 						quit = True
 					else:
@@ -144,4 +142,5 @@ def firstpage():
 		pygame.display.update()
 
 firstpage()
+print(dat)
 wplayerdata("PlayerData.dat", dat)

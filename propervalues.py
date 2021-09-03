@@ -45,10 +45,10 @@ transparent.set_alpha(168)
 def dist(a, b):
 	return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
 
-def textbox(x, y, l, b, text, events, active):
+def textbox(x, y, l, b, text, events, active, color1 = gold, color2 = orange):
 	font = pygame.font.Font(None, b)
 	input_box = pygame.Rect(x, y, l, b)
-	colors = [gold, orange]
+	colors = [color1, color2]
 	color = colors[active]
 
 
