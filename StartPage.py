@@ -77,16 +77,19 @@ def playerpage():
 			image(gbutton, display_width//2 - display_width//4, display_height//2 - display_height//3)
 			image(ptower, display_width//2 - display_width//4 + display_width/76, display_height//2 - display_height//3 + display_height//50)
 
-		for event in events:
-			if event.type == pygame.MOUSEBUTTONDOWN:
-				if mselect == 0 and inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
-					tiles, partow = randscreen()
-					p = maingam(0, tiles, partow)
+			image(gbutton, display_width//2, display_height//2 - display_height//6)
+			image(ptower, display_width//2 - display_width//4 + display_width/76, display_height//2 - display_height//3 + display_height//50)
 
-					if not p:
-						quit = True
-					else:
-						return 1
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2 - display_width//4, display_height//2 - display_height//4, display_width//12, display_width//12):
+						tiles, partow = randscreen()
+						p = maingam(0, tiles, partow)
+
+						if not p:
+							quit = True
+						else:
+							return 1
 		
 		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
 				
