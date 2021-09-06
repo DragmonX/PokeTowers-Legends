@@ -33,6 +33,8 @@ def Map(data):
 
 	savetb = 0
 
+	loadse, scr = 0, 0
+
 	positions = []
 
 	for i in range((display_width//tilesize + 1) * (display_height//tilesize)):
@@ -110,6 +112,8 @@ def Map(data):
 						if inmouse(display_width//30*(j%l+1), display_width//30*(j//l+1), display_width//30, display_width//30):
 							tool = j+1
 
+				i+=1
+
 		elif toolse == 2:
 			if opti == 0:
 				colpatch(black, display_width, display_height, 130, 0, 0)
@@ -159,6 +163,7 @@ def Map(data):
 							dat[1].append(data)
 							fname = data[3]
 							opti = 0
+							toolse = 0
 
 				data[3], savetb = textbox(display_width//4, 3*display_height//4-display_height//32-textsize, display_width//2, textsize, data[3], events, savetb, gray, white)
 
@@ -169,6 +174,7 @@ def Map(data):
 						dat[1][d] = data
 						found  = True
 						opti = 0
+						toolse = 0
 				if not found:
 					opti = 2
 
@@ -188,13 +194,28 @@ def Map(data):
 						if inmouse(display_width//2, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize):
 							opti = 0
 							data[3] = fname
-						# elif inmouse(display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize):
-						# 	dat[1].append(data)
-						# 	fname = data[3]
-						# 	opti = 0
+							loadse = 0
+						elif inmouse(display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize) and loadse:
+							data = dat[1][loadse - 1]
+							fname = data[3]
+							opti = 0
+							toolse = 0
+							loadse = 0
 
 				colpatch(white, display_width//2, display_height//2 - display_height//32, 30, display_width//4, display_height//4)
 
+				for i in range(scr, min(len(dat[1]), 9)):
+					filname = dat[1][i][3]
+
+					if loadse == i+1:
+						Button(filname, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, white, white, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize, white, black, 0, 0, textsize)
+					else:
+						Button(filname, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, black, black, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize, white, black, 0, 50, textsize)
+
+					for event in events:
+						if event.type == pygame.MOUSEBUTTONDOWN:
+							if inmouse((i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize):
+								loadse = i+1
 
 
 

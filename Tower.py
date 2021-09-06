@@ -129,22 +129,26 @@ def randscreen():
 	return tiles, towers
 
 def findir(ele, tiles):
+	cen = (ele[0]+16, ele[1]+16)
+
 	for i in range(len(tiles) - 1):
-		if tiles[i][0] <= ele[0] - (tilesize//2 - 16) <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] + tilesize//2 + 16 <= tiles[i][1] + tilesize:
-			if tiles[i][0] == tiles[i + 1][0] and tiles[i][1] < tiles[i + 1][1]:
-				return 3
-			elif tiles[i][0] == tiles[i + 1][0] and tiles[i][1] > tiles[i + 1][1]:
-				return 1
-			elif tiles[i][0] < tiles[i + 1][0] and tiles[i][1] == tiles[i + 1][1]:
-				return 2
-			elif tiles[i][0] > tiles[i + 1][0] and tiles[i][1] == tiles[i + 1][1]:
-				return 4
+		if tiles[i][0] == tiles[i + 1][0] and tiles[i][1] < tiles[i + 1][1] and tiles[i][0] <= ele[0] - (tilesize//2 - 16) <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] - tilesize//2 + 32 <= tiles[i][1] + tilesize:
+			return 3 #down
+		elif tiles[i][0] == tiles[i + 1][0] and tiles[i][1] > tiles[i + 1][1] and tiles[i][0] <= ele[0] - (tilesize//2 - 16) <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] + tilesize//2 + 16 <= tiles[i][1] + tilesize:
+			return 1 #up
+		elif tiles[i][0] < tiles[i + 1][0] and tiles[i][1] == tiles[i + 1][1] and tiles[i][0] <= ele[0] - (tilesize//2 - 16) <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] + tilesize//2 + 16 <= tiles[i][1] + tilesize:
+			return 2 #right
+		elif tiles[i][0] > tiles[i + 1][0] and tiles[i][1] == tiles[i + 1][1] and tiles[i][0] <= ele[0] + tilesize//2 <= tiles[i][0] + tilesize and tiles[i][1] <= ele[1] + tilesize//2 + 16 <= tiles[i][1] + tilesize:
+			return 4 #left
 
 	return 2
 
 
 def maingam(tot, tiles, partow):
-	towers = partow
+	towers = []
+
+	for t in partow:
+		towers.append(list(t))
 
 	#song
 

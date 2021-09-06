@@ -29,6 +29,7 @@ gbutton = loadimage('Images/goldbutton.png', display_width//12, display_width//1
 ptower = loadimage('Images/printtower.png', display_width//18, display_width//18)
 playbutton = loadimage('Images/play.png', display_width//28, display_width//28)
 mapbutton = loadimage('Images/map.png', display_width//32, display_width//32)
+playmap = loadimage('Images/playmap.png', display_width//18, display_width//18)
 
 #game coding
 
@@ -40,6 +41,9 @@ def playerpage():
 
 	mtrans = [170, 140, 140, 140]
 	tbactive = False
+
+	loadmap = False
+	loadse, scr = 0, 0
 
 	while not quit:
 		events = pygame.event.get()
@@ -56,7 +60,7 @@ def playerpage():
 
 		for i in range(4):
 			for event in events:
-				if event.type == pygame.MOUSEBUTTONDOWN:
+				if event.type == pygame.MOUSEBUTTONDOWN and not loadmap:
 					if inmouse(tx, ty, display_width//9, display_height//6):
 						mtrans[mselect] = 140
 						mselect = i
@@ -78,10 +82,10 @@ def playerpage():
 			image(ptower, display_width//2 - display_width//4 + display_width/76, display_height//2 - display_height//3 + display_height//50)
 
 			image(gbutton, display_width//2, display_height//2 - display_height//6)
-			image(ptower, display_width//2 - display_width//4 + display_width/76, display_height//2 - display_height//3 + display_height//50)
+			siimage(playmap, display_width//2+display_width//55, display_height//2 - display_height//6 + display_height//33, display_width//23, display_width//23)
 
 			for event in events:
-				if event.type == pygame.MOUSEBUTTONDOWN:
+				if event.type == pygame.MOUSEBUTTONDOWN and not loadmap:
 					if inmouse(display_width//2 - display_width//4, display_height//2 - display_height//4, display_width//12, display_width//12):
 						tiles, partow = randscreen()
 						p = maingam(0, tiles, partow)
@@ -90,6 +94,55 @@ def playerpage():
 							quit = True
 						else:
 							return 1
+
+					elif inmouse(display_width//2+display_width//55, display_height//2 - display_height//6 + display_height//33, display_width//23, display_width//23):
+						loadmap = True
+
+		if loadmap:
+			colpatch(black, display_width, display_height, 130, 0, 0)
+
+			textsize = display_height//28
+			
+			Button("Load", 3*display_width//8, 3*display_height//4, white, white, display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+			Button("Cancel", 5*display_width//8, 3*display_height//4, white, white, display_width//2, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize, black, white, 0, 50, textsize)
+
+			image(load, 5*display_width//16-display_height//100, 3*display_height//4)
+			image(cross, 9*display_width//16 - display_height//100, 3*display_height//4-display_height//200)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize):
+						loadmap = False
+						loadse = 0
+					elif inmouse(display_width//4, 3*display_height//4-display_height//32, display_width//4, display_height//16+textsize) and loadse:
+						data = dat[1][loadse - 1]
+
+						p = maingam(0, data[0], data[1])
+
+						if not p:
+							quit = True
+						else:
+							return 1
+
+						loadse = 0
+
+			colpatch(white, display_width//2, display_height//2 - display_height//32, 80, display_width//4, display_height//4)
+
+			for i in range(scr, min(len(dat[1]), 9)):
+				filname = dat[1][i][3]
+
+				if loadse == i+1:
+					Button(filname, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, white, white, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize, white, black, 0, 0, textsize)
+				else:
+					Button(filname, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, black, black, (i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize, white, black, 0, 50, textsize)
+
+				for event in events:
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						if inmouse((i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize):
+							loadse = i+1
+
+
+
 		
 		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
 				
@@ -145,5 +198,4 @@ def firstpage():
 		pygame.display.update()
 
 firstpage()
-print(dat)
 wplayerdata("PlayerData.dat", dat)
