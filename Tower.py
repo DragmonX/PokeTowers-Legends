@@ -610,8 +610,7 @@ def maingam(tot, tiles, partow):
 					if inmouse(display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19):
 						return 1
 					elif inmouse(display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19):
-						maingam(tot+1, tiles, partow)
-						quit = True
+						return maingam(tot+1, tiles, partow)
 
 
 
