@@ -47,6 +47,30 @@ def Map(data):
 			if event.type == pygame.QUIT:
 				quit = True
 
+		if not tool and not toolse:
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if event.button == 3:
+						currpos = [mouse[0]//tilesize, (display_height - mouse[1])//tilesize]
+						tileno = currpos[0]*(display_height//tilesize) + currpos[1]
+
+						if positions[tileno] == 1:
+							for til in range(len(data[0])):
+								if data[0][til][2] == tileno:
+									for p in range(til, len(data[0])):
+										positions[data[0][p][2]] = 0
+									del data[0][til:]
+									break
+						elif 1 <= positions[tileno] <= 1+len(tower):
+							for til in data[1]:
+								if til[3] == tileno:
+									data[1].remove(til)
+									positions[tileno] = 0
+									break
+
+
+
+
 		image(background, 0, 0)
 
 		Button("", 0, 0, black, black, 0, 0, display_width//30, display_width//30, black, black, 0, 90)
@@ -202,6 +226,15 @@ def Map(data):
 							toolse = 0
 							loadse = 0
 
+							for p in range(len(positions)):
+								positions[p] = 0
+
+							for d in data[0]:
+								positions[d[2]] = 1
+							for d in data[1]:
+								positions[d[3]] = d[2] + 2
+
+
 				colpatch(white, display_width//2, display_height//2 - display_height//32, 30, display_width//4, display_height//4)
 
 				for i in range(scr, min(len(dat[1]), 9)):
@@ -237,10 +270,5 @@ def Map(data):
 					tool = 0
 				elif toolse == 1:
 					toolse = 0
-
-
-
-
-
 
 		pygame.display.update()
