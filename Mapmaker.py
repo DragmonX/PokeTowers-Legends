@@ -249,16 +249,9 @@ def Map(data):
 						if event.type == pygame.MOUSEBUTTONDOWN:
 							if inmouse((i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize):
 								loadse = i+1
-
-
-
-
-
 			else:
 				opti = 0
 				toolse = 0
-
-
 
 		for event in events:
 			if event.type == pygame.MOUSEBUTTONDOWN:

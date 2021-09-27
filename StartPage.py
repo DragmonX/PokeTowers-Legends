@@ -86,7 +86,7 @@ def playerpage():
 
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN and not loadmap:
-					if inmouse(display_width//2 - display_width//4, display_height//2 - display_height//4, display_width//12, display_width//12):
+					if inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
 						tiles, partow = randscreen()
 						p = maingam(0, tiles, partow)
 

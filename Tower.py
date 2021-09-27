@@ -30,6 +30,8 @@ heart = loadimage('Images/heart.png', display_width//60, display_width//60)
 shield = loadimage('Images/shield.png', display_width//60, display_width//60)
 speed = loadimage('Images/speed.png', display_width//60, display_width//60)
 sword = loadimage('Images/sword.png', display_width//60, display_width//60)
+tools = loadimage('Images/tools.png', display_width//30, display_width//30)
+more = loadimage('Images/more.png', display_width//32, display_width//32)
 
 #game coding
 
@@ -53,7 +55,7 @@ def randscreen():
 
 		if nt < 70:
 			x += tilesize
-		elif y >= tilesize:
+		elif y >= 2*tilesize:
 			y -= tilesize
 
 		tiles.append((x, y))
@@ -74,7 +76,7 @@ def randscreen():
 				xc = a[0] - tower[0].l
 				towers.append([xc, yc, 0])
 				i+=1
-			elif tiles[i - 1][1] == a[1] and a[1] - tower[0].b >= 0:
+			elif tiles[i - 1][1] == a[1] and a[1] - tower[0].b >= 2*tilesize:
 				yc = a[1] - tower[0].b
 				towers.append([xc, yc, 0])
 				i+=1
@@ -101,7 +103,7 @@ def randscreen():
 			if tiles[i - 1][0] == a[0] and a[0] - tower[0].l >= 0:
 				xc = a[0] - tower[0].l
 				towers.append([xc, yc, 0])
-			elif tiles[i - 1][1] == a[1] and a[1] - tower[0].b >= 0:
+			elif tiles[i - 1][1] == a[1] and a[1] - tower[0].b >= 2*tilesize:
 				yc = a[1] - tower[0].b
 				towers.append([xc, yc, 0])
 
@@ -163,6 +165,8 @@ def maingam(tot, tiles, partow):
 	quit = False
 	troops = [] #[[troop index, troop number]]
 	nextl = 0
+
+	tool, toolse = 0, 0
 	
 	#main-loop
 
@@ -175,6 +179,13 @@ def maingam(tot, tiles, partow):
 
 		image(background, 0, 0)
 
+		Button("", 0, 0, black, black, 0, 0, display_width//30, display_width//30, black, black, 0, 90)
+		image(tools, 0, 0)
+
+		for event in events:
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if inmouse(0, 0, display_width//30, display_width//30):
+					toolse = 1
 		
 		for a in tiles:
 			image(tile, a[0], a[1])
@@ -182,7 +193,7 @@ def maingam(tot, tiles, partow):
 		for a in towers:
 			tower[a[2]].dis(a[0], a[1])
 
-			if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b):
+			if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b) and not tool:
 				siimage(rancircle, a[0]+tower[a[2]].l//2-tower[a[2]].rang, a[1]+tower[a[2]].b//2-tower[a[2]].rang, 2*tower[a[2]].rang, 2*tower[a[2]].rang)
 			
 			if a[2] == 1:
@@ -190,36 +201,50 @@ def maingam(tot, tiles, partow):
 
 		if nextl == 0:
 			maketower = False
-			for a in towers:
-				if toselected == a:
-					colpatch(black, tower[co[2]].l * len(tower), tower[co[2]].b, 100, a[0]+tower[co[2]].l, a[1]-tower[co[2]].b)
-					x, y = a[0]+tower[co[2]].l, a[1]-tower[co[2]].b
-					for i in range(0, len(tower)):
-						if i == a[2]:
-							continue
 
-						tower[i].dis(x, y)
+			if tool:
+				if  tool <= len(tower):
+					image(tower[tool-1].img, mouse[0]-tower[tool-1].l//2, mouse[1]-tower[tool-1].b//2)
+					for a in towers:
+						if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b):
+							siimage(rancircle, a[0]+tower[a[2]].l//2-tower[tool-1].rang, a[1]+tower[a[2]].b//2-tower[tool-1].rang, 2*tower[tool-1].rang, 2*tower[tool-1].rang)
 
-						if inmouse(x, y, tower[i].l, tower[i].b):
-							siimage(rancircle, a[0]+tower[i].l//2-tower[i].rang, a[1]+tower[i].b//2-tower[i].rang, 2*tower[i].rang, 2*tower[i].rang)
+				for event in events:
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						if event.button == 3:
+							tool = 0
+						elif event.button == 1:
+							if tool <= len(tower):
+								for a in towers:
+									if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b):
+										a[2] = tool - 1
+										break
 
-						x += tower[i].l + 2
+			if toolse == 1:
+				n = len(tower)
+				l = int(sqrt(n-1)+1)
 
-					x, y = a[0]+tower[co[2]].l, a[1]-tower[co[2]].b
+				Button("", 0, 0, black, black, display_width//30, display_width//30, l*display_width//30, (n+2)//l * display_width//30, black, black, 90, 90)
 
-					for i in range(0, len(tower)):
-						if i == a[2]:
-							continue
-						for event in events:
-							if event.type == pygame.MOUSEBUTTONDOWN:
-								if inmouse(x, y, tower[co[2]].l, tower[co[2]].b):
-									toselected = [0, 0, 0]
-									a[2] = i
-									maketower = True
-									break
+				x, y, i = display_width//30, display_width//30, 1
 
-						x += tower[co[2]].l
+				for tow in tower:
+					Button("", 0, 0, black, black, x, y, display_width//30, display_width//30, black, white, 0, 50)
+					siimage(tow.img, x, y, display_width//30, display_width//30)
+					
+					if i % l:
+						x += display_width//30
+					else:
+						x = display_width//30
+						y += display_width//30
 
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						for j in range(n):
+							if inmouse(display_width//30*(j%l+1), display_width//30*(j//l+1), display_width//30, display_width//30):
+								tool = j+1
+								toolse = 0
+
+					i+=1
 
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN and not maketower:
@@ -234,13 +259,13 @@ def maingam(tot, tiles, partow):
 					break
 
 		if nextl == 2:
-			image(buttonp, display_height//70, display_width//124)
+			image(buttonp, display_width - buttonsize - display_width//124, display_height//70)
 			break
 		elif nextl == 0:
-			image(button, display_height//70, display_width//124)
+			image(button, display_width - buttonsize - display_width//124, display_height//70)
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN:
-					if display_height//70 <= mouse[0] <= display_height//70 + buttonsize and display_width//124 <= mouse[1] <= display_width//124 + buttonsize:
+					if inmouse(display_width - buttonsize - display_width//124, display_height//70, buttonsize, buttonsize):
 						nextl = 1
 		else:
 			transparent.fill(black)
