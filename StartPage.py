@@ -99,7 +99,7 @@ def playerpage():
 						loadmap = True
 
 		if loadmap:
-			colpatch(black, display_width, display_height, 130, 0, 0)
+			colpatch(black, display_width, display_height, 180, 0, 0)
 
 			textsize = display_height//28
 			
@@ -126,7 +126,7 @@ def playerpage():
 
 						loadse = 0
 
-			colpatch(white, display_width//2, display_height//2 - display_height//32, 80, display_width//4, display_height//4)
+			colpatch(white, display_width//2, display_height//2 - display_height//32, 150, display_width//4, display_height//4)
 
 			for i in range(scr, min(len(dat[1]), 9)):
 				filname = dat[1][i][3]

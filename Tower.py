@@ -32,6 +32,10 @@ speed = loadimage('Images/speed.png', display_width//60, display_width//60)
 sword = loadimage('Images/sword.png', display_width//60, display_width//60)
 tools = loadimage('Images/tools.png', display_width//30, display_width//30)
 more = loadimage('Images/more.png', display_width//32, display_width//32)
+volume = loadimage('Images/sound.png', display_width//28, display_width//28)
+mute = loadimage('Images/mute.png', display_width//47, display_width//28)
+wplaybutton = loadimage('Images/wplay.png', display_width//28, display_width//28)
+home = loadimage('Images/home.png', display_height//25, display_height//25)
 
 #game coding
 
@@ -167,6 +171,11 @@ def maingam(tot, tiles, partow):
 	nextl = 0
 
 	tool, toolse = 0, 0
+
+	escmenu = False
+	escmtool = 0
+
+	song = True
 	
 	#main-loop
 
@@ -176,16 +185,14 @@ def maingam(tot, tiles, partow):
 		for event in events:
 		    if event.type == pygame.QUIT:
 			    quit = True
+		    if event.type == pygame.KEYDOWN:
+			    if event.key == pygame.K_ESCAPE:
+				    escmenu = True
 
 		image(background, 0, 0)
 
 		Button("", 0, 0, black, black, 0, 0, display_width//30, display_width//30, black, black, 0, 90)
 		image(tools, 0, 0)
-
-		for event in events:
-			if event.type == pygame.MOUSEBUTTONDOWN:
-				if inmouse(0, 0, display_width//30, display_width//30):
-					toolse = 1
 		
 		for a in tiles:
 			image(tile, a[0], a[1])
@@ -193,11 +200,50 @@ def maingam(tot, tiles, partow):
 		for a in towers:
 			tower[a[2]].dis(a[0], a[1])
 
-			if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b) and not tool:
+			if inmouse(a[0], a[1], tower[a[2]].l, tower[a[2]].b) and not tool and not escmenu:
 				siimage(rancircle, a[0]+tower[a[2]].l//2-tower[a[2]].rang, a[1]+tower[a[2]].b//2-tower[a[2]].rang, 2*tower[a[2]].rang, 2*tower[a[2]].rang)
 			
 			if a[2] == 1:
 				image(sprite[1].get_image(13), a[0] + tower[a[2]].l//4, a[1]-sprite[1].height+17)
+
+		if escmenu:
+			# quit = True
+			colpatch(black, display_width, display_height, 190, 0, 0)
+
+			writes("Paused", white, display_width//2 - display_width//25, display_height//2.5, display_height//17)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(wplaybutton, display_width//2 - display_width//8, display_height//2)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(home, display_width//2 - display_width//8 + display_width//8 + display_width//160, display_height//2 + display_width//160)
+
+			if song:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(volume, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)	
+			else:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(mute, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28):
+						escmenu = False
+					elif inmouse(display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28):
+						return 1
+					elif inmouse(display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28):
+						song = not song
+
+						if song == False:
+							pygame.mixer.music.set_volume(0)
+						else:
+							pygame.mixer.music.set_volume(1)
+
+
+			pygame.display.update()
+
+			continue
+			
 
 		if nextl == 0:
 			maketower = False
@@ -224,7 +270,7 @@ def maingam(tot, tiles, partow):
 				n = len(tower)
 				l = int(sqrt(n-1)+1)
 
-				Button("", 0, 0, black, black, display_width//30, display_width//30, l*display_width//30, (n+2)//l * display_width//30, black, black, 90, 90)
+				Button("", 0, 0, black, black, display_width//30, display_width//30, l*display_width//30, (n)//l * display_width//30, black, black, 90, 90)
 
 				x, y, i = display_width//30, display_width//30, 1
 
@@ -244,19 +290,8 @@ def maingam(tot, tiles, partow):
 								tool = j+1
 								toolse = 0
 
+
 					i+=1
-
-			for event in events:
-				if event.type == pygame.MOUSEBUTTONDOWN and not maketower:
-					toselected = [0, 0, 0]
-
-			for co in towers:
-				for event in events:
-					if event.type == pygame.MOUSEBUTTONDOWN:
-					    if inmouse(co[0], co[1], tower[co[2]].l, tower[co[2]].b):
-						    toselected = co
-
-					break
 
 		if nextl == 2:
 			image(buttonp, display_width - buttonsize - display_width//124, display_height//70)
@@ -282,6 +317,14 @@ def maingam(tot, tiles, partow):
 							nextl = 2
 					elif inmouse(display_width - (display_width//4 + display_width//10 + display_width//14), display_height//3 + display_height//7, display_width//14, display_height//16):
 							nextl = 0
+
+		for event in events:
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if inmouse(0, 0, display_width//30, display_width//30) and toolse == 0:
+					toolse = 1
+					tool = 0
+				else:
+					toolse = 0
 		
 		clock.tick(fram)
 
@@ -301,12 +344,56 @@ def maingam(tot, tiles, partow):
 		for event in events:
 			if event.type == pygame.QUIT:
 				quit = True
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					escmenu = True
 
 		image(background2, 0, 0)
 		pygame.draw.rect(gameDisplay, black, [display_width//20, 0, display_width - display_width//20, placesizey])
 		pygame.draw.rect(gameDisplay, black, [0, 0, display_width//20, display_height])
 
 		pygame.draw.rect(gameDisplay, white, [0, mins - 1, display_width//20, 2])
+
+		for troop in troops:
+			pokemon[troop[0] - 1].move(2, 0, (19 - ((troop[1] - 1) % 18 + 1)) * placesizex + (placesizex - 32) // 2, display_height - (((troop[1] - 1) // 18) * placesizey + (placesizey - 32) // 2 + 32))
+
+		if escmenu:
+			# quit = True
+			colpatch(black, display_width, display_height, 190, 0, 0)
+
+			writes("Paused", white, display_width//2 - display_width//25, display_height//2.5, display_height//17)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(wplaybutton, display_width//2 - display_width//8, display_height//2)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(home, display_width//2 - display_width//8 + display_width//8 + display_width//160, display_height//2 + display_width//160)
+
+			if song:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(volume, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)	
+			else:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(mute, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28):
+						escmenu = False
+					elif inmouse(display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28):
+						return 1
+					elif inmouse(display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28):
+						song = not song
+
+						if song == False:
+							pygame.mixer.music.set_volume(0)
+						else:
+							pygame.mixer.music.set_volume(1)
+
+
+			pygame.display.update()
+
+			continue
 
 		for i in range(st, st + 6):
 			Button("", 0, 0, white, white, 0, mins + (i - st) * 32 + 2 * (i - st) * display_height//20 + 1, display_width//20, 32 + 2 * display_height//20 - 2, black, gray)
@@ -392,10 +479,6 @@ def maingam(tot, tiles, partow):
 
 			gameDisplay.blit(trans, (mouse[0] - mouse[0] % placesizex, mouse[1] - mouse[1] % placesizey))
 			pokemon[trselected - 1].move(3, 0, mouse[0] - 16, mouse[1] - 16)
-
-
-		for troop in troops:
-			pokemon[troop[0] - 1].move(2, 0, (19 - ((troop[1] - 1) % 18 + 1)) * placesizex + (placesizex - 32) // 2, display_height - (((troop[1] - 1) // 18) * placesizey + (placesizey - 32) // 2 + 32))
 		
 		if st > 0:
 			Button("", 0, 0, black, black, 0, 0, display_width//20, mins - 1, gold, silver)
@@ -482,6 +565,9 @@ def maingam(tot, tiles, partow):
 		for event in events:
 		    if event.type == pygame.QUIT:
 			    quit = True
+		    if event.type == pygame.KEYDOWN:
+			    if event.key == pygame.K_ESCAPE:
+				    escmenu = True
 
 		image(background, 0, 0)
 
@@ -495,11 +581,59 @@ def maingam(tot, tiles, partow):
 			if a[2] == 1:
 				image(sprite[1].get_image(towtim[tow]), a[0] + tower[a[2]].l//4, a[1]-sprite[1].height+17)
 
+		for projectile in projectiles:
+			image(img, projectile[1], projectile[2]+projec[projectile[0]].b)
+
 		for t in troops:
 			troop = troops.index(t)
 			if (troops[troop][1] - 1) % 18 + 1 <= tr:
 				direc = findir([trind[troop][1], trind[troop][2]], tiles)
 				pokemon[troops[troop][0] - 1].move(direc, trind[troop][0], trind[troop][1], trind[troop][2])
+				pygame.draw.rect(gameDisplay, white, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, display_width//25, display_height//140])
+				pygame.draw.rect(gameDisplay, green, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, (display_width//25 * trind[troop][3])//trind[troop][5], display_height//140])
+
+		if escmenu:
+			# quit = True
+			colpatch(black, display_width, display_height, 190, 0, 0)
+
+			writes("Paused", white, display_width//2 - display_width//25, display_height//2.5, display_height//17)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(wplaybutton, display_width//2 - display_width//8, display_height//2)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(home, display_width//2 - display_width//8 + display_width//8 + display_width//160, display_height//2 + display_width//160)
+
+			if song:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(volume, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)	
+			else:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(mute, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28):
+						escmenu = False
+					elif inmouse(display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28):
+						return 1
+					elif inmouse(display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28):
+						song = not song
+
+						if song == False:
+							pygame.mixer.music.set_volume(0)
+						else:
+							pygame.mixer.music.set_volume(1)
+
+
+			pygame.display.update()
+
+			continue
+
+		for t in troops:
+			troop = troops.index(t)
+			if (troops[troop][1] - 1) % 18 + 1 <= tr:
+				direc = findir([trind[troop][1], trind[troop][2]], tiles)
 				pygame.draw.rect(gameDisplay, white, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, display_width//25, display_height//140])
 				pygame.draw.rect(gameDisplay, green, [trind[troop][1] - display_width//100, trind[troop][2] - display_height//100, (display_width//25 * trind[troop][3])//trind[troop][5], display_height//140])
 
@@ -588,8 +722,6 @@ def maingam(tot, tiles, partow):
 
 				else:
 					projectile[1], projectile[2] = x2, y2
-
-				image(img, projectile[1], projectile[2]+projec[projectile[0]].b)
 			
 			tem = projectile[4]
 
@@ -633,6 +765,8 @@ def maingam(tot, tiles, partow):
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					if inmouse(display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19):
+						pygame.mixer.music.load('Sound/Theme.wav')
+						pygame.mixer.music.play(-1)
 						return 1
 					elif inmouse(display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19):
 						return maingam(tot+1, tiles, partow)
