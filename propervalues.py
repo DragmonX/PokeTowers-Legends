@@ -40,6 +40,8 @@ sky_blue = (135,206,235)
 transparent = pygame.Surface((display_width, display_height))
 transparent.set_alpha(168)
 
+song = True
+
 #Functions
 
 def dist(a, b):

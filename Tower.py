@@ -175,7 +175,7 @@ def maingam(tot, tiles, partow):
 	escmenu = False
 	escmtool = 0
 
-	song = True
+	global song
 	
 	#main-loop
 
@@ -765,8 +765,6 @@ def maingam(tot, tiles, partow):
 			for event in events:
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					if inmouse(display_width//4 - display_width//100, display_height//2-display_height//100, display_width//14, display_height//19):
-						pygame.mixer.music.load('Sound/Theme.wav')
-						pygame.mixer.music.play(-1)
 						return 1
 					elif inmouse(display_width//1.5 - display_width//100, display_height//2-display_height//100, display_width//8.5, display_height//19):
 						return maingam(tot+1, tiles, partow)

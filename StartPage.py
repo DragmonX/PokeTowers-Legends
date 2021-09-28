@@ -45,12 +45,19 @@ def playerpage():
 	loadmap = False
 	loadse, scr = 0, 0
 
+	escmenu = False
+	
+	global song
+
 	while not quit:
 		events = pygame.event.get()
 		mouse = pygame.mouse.get_pos()
 		for event in events:
 			if event.type == pygame.QUIT:
 				quit = True
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					escmenu = True
 
 		image(ppbackground, 0, 0)
 
@@ -85,7 +92,7 @@ def playerpage():
 			siimage(playmap, display_width//2+display_width//55, display_height//2 - display_height//6 + display_height//33, display_width//23, display_width//23)
 
 			for event in events:
-				if event.type == pygame.MOUSEBUTTONDOWN and not loadmap:
+				if event.type == pygame.MOUSEBUTTONDOWN and not loadmap and not escmenu:
 					if inmouse(display_width//2 - display_width//4, display_height//2 - display_height//3, display_width//12, display_width//12):
 						tiles, partow = randscreen()
 						p = maingam(0, tiles, partow)
@@ -98,7 +105,9 @@ def playerpage():
 					elif inmouse(display_width//2+display_width//55, display_height//2 - display_height//6 + display_height//33, display_width//23, display_width//23):
 						loadmap = True
 
-		if loadmap:
+
+
+		if loadmap and not escmenu:
 			colpatch(black, display_width, display_height, 180, 0, 0)
 
 			textsize = display_height//28
@@ -141,10 +150,46 @@ def playerpage():
 						if inmouse((i%2+1)*display_width//4, ((i-scr)//2)*textsize+display_height//4, display_width//4, textsize):
 							loadse = i+1
 
+		if escmenu:
+			# quit = True
+			colpatch(black, display_width, display_height, 190, 0, 0)
+
+			writes("Paused", white, display_width//2 - display_width//25, display_height//2.5, display_height//17)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(wplaybutton, display_width//2 - display_width//8, display_height//2)
+
+			Button("", 0, 0, white, white, display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+			image(home, display_width//2 - display_width//8 + display_width//8 + display_width//160, display_height//2 + display_width//160)
+
+			if song:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(volume, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)	
+			else:
+				Button("", 0, 0, white, white, display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28, white, white, 0, 50)
+				image(mute, display_width//2 - display_width//8 + 2*display_width//8, display_height//2)
+
+			for event in events:
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if inmouse(display_width//2 - display_width//8, display_height//2, display_width//28, display_width//28):
+						escmenu = False
+					elif inmouse(display_width//2 - display_width//8+display_width//8, display_height//2, display_width//28, display_width//28):
+						return 1
+					elif inmouse(display_width//2 - display_width//8 + 2*display_width//8, display_height//2, display_width//28, display_width//28):
+						song = not song
+
+						if song == False:
+							pygame.mixer.music.set_volume(0)
+						else:
+							pygame.mixer.music.set_volume(1)
 
 
-		
-		dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
+			pygame.display.update()
+
+			continue
+
+		if not escmenu:
+			dat[0], tbactive = textbox(display_width//100, display_height//100, display_width//8, display_height//25, dat[0], events, tbactive)
 				
 		
 		pygame.display.update()
@@ -186,6 +231,9 @@ def firstpage():
 					if not p:
 						quit = True
 					else:
+						if p == 1:
+							pygame.mixer.music.load('Sound/Theme.wav')
+							pygame.mixer.music.play(-1)
 						continue
 
 				if inmouse(display_width//10, display_height//3 - display_height//50 + display_height//13, display_width//8, display_height//13):
@@ -193,6 +241,8 @@ def firstpage():
 					if not p:
 						quit = True
 					else:
+						pygame.mixer.music.load('Sound/Theme.wav')
+						pygame.mixer.music.play(-1)
 						continue
 
 		pygame.display.update()
