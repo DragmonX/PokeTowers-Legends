@@ -158,8 +158,9 @@ def maingam(tot, tiles, partow):
 
 	#song
 
-	pygame.mixer.music.load('Sound/Battle.wav')
-	pygame.mixer.music.play(-1)
+	if tot == 0:
+		pygame.mixer.music.load('Sound/Battle.wav')
+		pygame.mixer.music.play(-1)
 
 #________________________________________________________________________________________________________________________________
 
